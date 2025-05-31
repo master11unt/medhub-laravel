@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\BaseDokterController;
 use App\Http\Controllers\Dokter\MessageController;
+use App\Http\Controllers\Dokter\ScheduleController;
 use App\Http\Controllers\DokterController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -75,13 +76,10 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->group(function () {
         Route::delete('/dashboard/obat/delete/{id}', 'destroy')->name('delete.obat');
     });
 
-    // Route untuk CRUD Dokter
     Route::resource('doctors', DoctorController::class);
 
-    // Route untuk update spesialisasi
     Route::put('doctors/{id}/specialization', [DoctorController::class, 'updateSpecialization'])->name('doctors.updateSpecialization');
 
-    // Route untuk toggle status konsultasi
     Route::post('doctors/{id}/toggle-consultation', [DoctorController::class, 'toggleConsultationStatus'])->name('doctors.toggleConsultation');
     
 });
@@ -95,6 +93,7 @@ Route::prefix('doctor')->middleware(['auth', 'isDoctor'])->group(function () {
         Route::post('/complete-profile', 'storeCompleteProfile');
         Route::get('/dashboard/dokter/edit/{id}', 'edit')->name('edit.dokter');
         Route::put('/dashboard/dokter/update/{id}', 'update')->name('update.dokter'); // Mengupdate data dokter
+        // Route::post('/status-online', 'updateStatusOnline')->name('dokter.status_online'); // Untuk update status online/offline
 
     });
 
@@ -103,4 +102,14 @@ Route::prefix('doctor')->middleware(['auth', 'isDoctor'])->group(function () {
     Route::post('consultations/{id}/chat', [MessageController::class, 'store'])->name('dokter.consultations.chat.send');
 
     Route::get('/doctor/profile', [DokterController::class, 'showProfile'])->name('doctor.profile');
+    Route::put('/dokter/update-status', [DokterController::class, 'updateStatus'])->name('dokter.updateStatus');
+    Route::get('/dokter/short-profile', [DokterController::class, 'showShortProfile'])->name('dokter.shortProfile');
+
+    Route::get('/schedules', [ScheduleController::class, 'index'])->name('dokter.schedules.index');
+    Route::get('/schedules/create', [ScheduleController::class, 'create'])->name('dokter.schedules.create');
+    Route::post('/schedules', [ScheduleController::class, 'store'])->name('dokter.schedules.store');
+    Route::get('/schedules/{id}/edit', [ScheduleController::class, 'edit'])->name('dokter.schedules.edit');
+    Route::put('/schedules/{id}', [ScheduleController::class, 'update'])->name('dokter.schedules.update');
+    Route::delete('/schedules/{id}', [ScheduleController::class, 'destroy'])->name('dokter.schedules.destroy');
+
 });

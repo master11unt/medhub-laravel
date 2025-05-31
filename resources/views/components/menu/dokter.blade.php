@@ -8,18 +8,18 @@
     <ul class="sidebar-menu">
         <li class="menu-header">Dashboard Dokter</li>
         <li class="nav-item dropdown">
-            <a href="" class="nav-link has-dropdown"><i class="fas fa-user"></i><span>Pasien</span></a>
+            <a href="" class="nav-link has-dropdown"><i class="fas fa-user"></i><span>Dokter</span></a>
             <ul class="dropdown-menu">
                 <li class="">
-                    <!-- <a href="{{ route('index.user') }}" class="nav-link">Rekam Medis</a> -->
+                    <a href="{{ route('dokter.schedules.index') }}" class="nav-link">Jadwal Praktek</a>
                 </li>
                 <li class="">
-                    <a href="{{ route('index.dokter') }}" class="nav-link">Data Dokter</a>
+                    <a class="nav-link" href="{{ route('dokter.shortProfile') }}">Profil Singkat Dokter</a>
                 </li>
             </ul>
         </li>
         <li class="nav-item dropdown">
-            <a href="" class="nav-link has-dropdown"><i class="fas fa-chat"></i><span>Konsultasi</span></a>
+            <a href="" class="nav-link has-dropdown"><i class="fas fa-file"></i><span>Konsultasi</span></a>
             <ul class="dropdown-menu">
                 <li class="">
                     <a href="{{ route('dokter.consultations') }}" class="nav-link">Daftar Chat Konsultasi</a>
@@ -36,7 +36,7 @@
             </ul>
         </li>
         <li class="nav-item dropdown">
-            <a href="" class="nav-link has-dropdown"><i class="fas fa-newspaper"></i><span>Edukasi</span></a>
+            <a href="" class="nav-link has-dropdown"><i class="fas fa-newspaper"></i><span>Pasien</span></a>
             <ul class="dropdown-menu">
                 <li class="">
                     <a href="{{ route('index.education-categories') }}" class="nav-link">Data Kategori</a>

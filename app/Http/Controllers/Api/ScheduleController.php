@@ -3,31 +3,24 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Doctor;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 
-class DoctorController extends Controller
+class ScheduleController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $doctors = Doctor::with('user', 'reviews')
-            ->when($request->specialization, function ($query) use ($request) {
-                $query->where('specialization', 'like', "%{$request->specialization}%");
-            })
-            ->get()
-            ->map(function ($doctor) {
-                $data = $doctor->toArray();
-                $data['average_rating'] = round($doctor->average_rating, 2);
-                $data['is_in_consultation'] = $doctor->is_in_consultation;
-                return $data;
-            });
-
+        $query = Schedule::query();
+        if ($request->doctor_id) {
+            $query->where('doctor_id', $request->doctor_id);
+        }
+        $schedules = $query->orderBy('date')->get();
         return response()->json([
             'status' => 'Sukses',
-            'data' => $doctors
+            'data' => $schedules
         ], 200);
     }
 
@@ -44,22 +37,16 @@ class DoctorController extends Controller
      */
     public function show($id)
     {
-        $doctor = Doctor::with('user', 'schedules', 'reviews')->find($id);
-
-        if (!$doctor) {
+        $schedule = Schedule::find($id);
+        if (!$schedule) {
             return response()->json([
                 'status' => 'Gagal',
-                'pesan' => 'Dokter tidak ditemukan'
+                'message' => 'Jadwal tidak ditemukan'
             ], 404);
         }
-
-        $data = $doctor->toArray();
-        $data['average_rating'] = round($doctor->average_rating, 2);
-        $data['is_in_consultation'] = $doctor->is_in_consultation;
-
         return response()->json([
             'status' => 'Sukses',
-            'data' => $data
+            'data' => $schedule
         ], 200);
     }
 

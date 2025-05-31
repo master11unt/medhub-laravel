@@ -54,4 +54,26 @@ class DokterController extends Controller
         return view('Dokter.profile', compact('user', 'doctor'));
     }
 
+    public function updateStatus(Request $request)
+    {
+        $doctor = Doctor::findOrFail($request->doctor_id);
+
+        // Toggle status online/offline
+        $doctor->is_online = !$doctor->is_online;
+        $doctor->save();
+
+        return redirect()->route('dokter.shortProfile')->with('success', 'Status dokter berhasil diperbarui!');
+    }
+
+    public function showShortProfile()
+    {
+        // Ambil data dokter berdasarkan user yang sedang login
+        $user = Auth::user();
+        $doctor = $user->doctor; // relasi User hasOne Doctor
+
+        return view('Dokter.shortProfile', compact('doctor'));
+    }
+
+
+
 }

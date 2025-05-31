@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\HealthRecordController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\PrescriptionController;
 use App\Http\Controllers\Api\PrescriptionItemController;
+use App\Http\Controllers\Api\ScheduleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->put('/health-records/me', [HealthRecordController::class, 'updateMe']);
 
 Route::apiResource('/api-doctors', DoctorController::class)->middleware('auth:sanctum');
+// Route::apiResource('/doctors', DoctorController::class);
+
 Route::apiResource('/api-categories', CategoryEducationController::class)->middleware('auth:sanctum');
 Route::apiResource('/api-educations', EducationController::class)->middleware('auth:sanctum');
 // Route::apiResource('/api-prescriptionItems', PrescriptionItemController::class)->middleware('auth:sanctum');
@@ -41,10 +44,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/health-records/me', [HealthRecordController::class, 'me']);
-    // Tampilkan data rekam medis user yang login
     Route::get('/health-records', [HealthRecordController::class, 'show']);
-    // Simpan data rekam medis user yang login (POST)
     Route::post('/health-records', [HealthRecordController::class, 'store']);
-    // Update data rekam medis user yang login (PUT)
     Route::put('/health-records/{id}', [HealthRecordController::class, 'update']);
+
+    Route::get('/schedules', [ScheduleController::class, 'index']);
+    Route::get('/schedules/{id}', [ScheduleController::class, 'show']);
 });
