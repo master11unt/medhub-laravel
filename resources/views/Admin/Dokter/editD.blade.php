@@ -10,7 +10,7 @@
         </div>
 
         <div class="section-body">
-            <form action="{{ route('update.dokter', $doctor->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.update.dokter', $doctor->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 

@@ -74,6 +74,30 @@ class DokterController extends Controller
         return view('Dokter.shortProfile', compact('doctor'));
     }
 
+    public function edit($id)
+    {
+        $doctor = Doctor::with('user')->findOrFail($id);
+        return view('Dokter.edit_profile', compact('doctor'));
+    }
 
+    public function update(Request $request, $id)
+    {
+        $doctor = Doctor::findOrFail($id);
+        $user = $doctor->user;
 
+        $doctor->specialization = $request->input('specialization');
+        $doctor->education = $request->input('education');
+        $doctor->practice_place = $request->input('practice_place');
+        $doctor->license_number = $request->input('license_number');
+        $doctor->average_rating = $request->input('average_rating');
+        $doctor->save();
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image')->store('images/doctors', 'public');
+            $user->image = $image;
+            $user->save();
+        }
+
+        return redirect()->route('doctor.profile')->with('success', 'Profil dokter berhasil diperbarui.');
+    }
 }

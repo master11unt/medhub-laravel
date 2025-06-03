@@ -5,8 +5,11 @@ use App\Http\Controllers\Admin\ConsultationController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\HealthRecordController;
+use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\MedicinesController;
 use App\Http\Controllers\Admin\PrescriptionController;
+use App\Http\Controllers\Admin\RegistrantController;
+use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\BaseDokterController;
@@ -17,7 +20,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    // return view('welcome');
+    return redirect('/slicingweb/index.html');
+    // return view('auth.login');
 });
 
 Auth::routes();
@@ -76,6 +81,31 @@ Route::prefix('admin')->middleware(['auth', 'isAdmin'])->group(function () {
         Route::delete('/dashboard/obat/delete/{id}', 'destroy')->name('delete.obat');
     });
 
+    Route::controller(RegistrantController::class)->prefix('dashboard/pendaftar')->group(function () {
+        Route::get('/', 'index')->name('index.pendaftar');
+        Route::get('/create', 'create')->name('create.pendaftar'); // Menampilkan form
+        Route::post('/', 'store')->name('store.pendaftar');         // Menyimpan data
+        Route::get('/edit/{registrant}', 'edit')->name('edit.pendaftar');
+        Route::put('/update/{registrant}', 'update')->name('update.pendaftar');
+        Route::delete('/delete/{registrant}', 'destroy')->name('delete.pendaftar');
+    });
+
+    Route::controller(LocationController::class)->group(function () {
+        Route::get('/dashboard/lokasi', 'index')->name('index.lokasi');
+        Route::post('/dashboard/lokasi/create', 'store')->name('create.lokasi');
+        Route::put('/dashboard/lokasi/update/{id}', 'update')->name('update.lokasi');
+        Route::delete('/dashboard/lokasi/delete/{id}', 'destroy')->name('delete.lokasi');
+    });
+
+    Route::controller(ServiceController::class)->group(function () {
+        Route::get('/dashboard/layanan', 'index')->name('index.layanan');
+        Route::get('/dashboard/layanan/create', 'create')->name('create.layanan');        // Tambahkan GET untuk halaman create
+        Route::post('/dashboard/layanan/store', 'store')->name('store.layanan');         // Ganti POST route untuk store
+        Route::get('/dashboard/layanan/edit/{id}', 'edit')->name('edit.layanan');
+        Route::put('/dashboard/layanan/update/{id}', 'update')->name('update.layanan');
+        Route::delete('/dashboard/layanan/delete/{id}', 'destroy')->name('delete.layanan');
+    });
+
     Route::resource('doctors', DoctorController::class);
 
     Route::put('doctors/{id}/specialization', [DoctorController::class, 'updateSpecialization'])->name('doctors.updateSpecialization');
@@ -91,8 +121,8 @@ Route::prefix('doctor')->middleware(['auth', 'isDoctor'])->group(function () {
     Route::controller(DokterController::class)->group(function () {
         Route::get('/complete-profile', 'showCompleteProfileForm')->name('doctor.complete-profile');
         Route::post('/complete-profile', 'storeCompleteProfile');
-        Route::get('/dashboard/dokter/edit/{id}', 'edit')->name('edit.dokter');
-        Route::put('/dashboard/dokter/update/{id}', 'update')->name('update.dokter'); // Mengupdate data dokter
+        Route::get('/dashboard/dokter/edit/{id}', 'edit')->name('admin.edit.dokter');
+        Route::put('/dashboard/dokter/update/{id}', 'update')->name('admin.update.dokter'); // Mengupdate data dokter
         // Route::post('/status-online', 'updateStatusOnline')->name('dokter.status_online'); // Untuk update status online/offline
 
     });

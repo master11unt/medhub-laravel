@@ -46,5 +46,13 @@
                 </li>
             </ul>
         </li>
+        <li class="nav-item dropdown">
+            <a href="#" class="nav-link has-dropdown"><i class="fas fa-heartbeat"></i> <span>Layanan Kesehatan</span></a>
+            <ul class="dropdown-menu">
+                <li><a href="{{ route('index.layanan') }}" class="nav-link">Data Layanan</a></li>
+                <li><a href="{{ route('index.lokasi') }}" class="nav-link">Data Lokasi</a></li>
+                <li><a href="{{ route('index.pendaftar') }}" class="nav-link">Data Pendaftar</a></li>
+            </ul>
+        </li>
     </ul>
 </aside>

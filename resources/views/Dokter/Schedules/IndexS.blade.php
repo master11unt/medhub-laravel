@@ -114,11 +114,11 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Tanggal</label>
-                        <input type="date" class="form-control" name="date" required>
+                        <input type="date" class="form-control" name="date" id="input-date-new" required>
                     </div>
                     <div class="form-group">
                         <label>Hari</label>
-                        <input type="text" class="form-control" name="day" required>
+                        <input type="text" class="form-control" name="day" id="input-day-new" readonly required>
                     </div>
                     <div class="form-group">
                         <label>Jam Mulai</label>
@@ -155,11 +155,11 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Tanggal</label>
-                        <input type="date" class="form-control" name="date" value="{{ $row->date }}" required>
+                        <input type="date" class="form-control" name="date" id="input-date-{{ $row->id }}" value="{{ $row->date }}" required>
                     </div>
                     <div class="form-group">
                         <label>Hari</label>
-                        <input type="text" class="form-control" name="day" value="{{ $row->day }}" required>
+                        <input type="text" class="form-control" name="day" id="input-day-{{ $row->id }}" value="{{ $row->day }}" readonly required>
                     </div>
                     <div class="form-group">
                         <label>Jam Mulai</label>
@@ -185,4 +185,36 @@
 @push('scripts')
 <!-- JS Libraries -->
 <script src="{{ asset('js/page/bootstrap-modal.js') }}"></script>
+
+<script>
+    // Fungsi untuk mendapatkan nama hari dari tanggal (dalam Bahasa Indonesia)
+    function getDayName(dateString) {
+        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const date = new Date(dateString);
+        return days[date.getDay()];
+    }
+
+    // Untuk modal tambah jadwal
+    document.getElementById('input-date-new').addEventListener('change', function() {
+        const dayName = getDayName(this.value);
+        document.getElementById('input-day-new').value = dayName ? dayName : '';
+    });
+
+</script>
+
+// Untuk setiap modal edit jadwal
+@foreach($schedules as $row)
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var inputDate = document.getElementById('input-date-{{ $row->id }}');
+        var inputDay = document.getElementById('input-day-{{ $row->id }}');
+        if (inputDate && inputDay) {
+            inputDate.addEventListener('change', function() {
+                const dayName = getDayName(this.value);
+                inputDay.value = dayName ? dayName : '';
+            });
+        }
+    });
+</script>
+@endforeach
 @endpush

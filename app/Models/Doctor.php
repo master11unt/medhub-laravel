@@ -55,4 +55,9 @@ class Doctor extends Model
     {
         return $this->hasMany(Schedule::class); // Satu dokter bisa memiliki banyak jadwal
     }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
 }

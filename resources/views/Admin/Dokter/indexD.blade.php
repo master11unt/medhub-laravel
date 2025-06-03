@@ -96,7 +96,7 @@
                                     </td>
                                     <td>{{ number_format($doctor->average_rating, 2) }}</td>
                                     <td>
-                                        <a href="{{ route('edit.dokter', $doctor->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="{{ route('admin.edit.dokter', $doctor->id) }}" class="btn btn-warning btn-sm">Edit</a>
                                     </td>
                                 </tr>
                                 @endforeach

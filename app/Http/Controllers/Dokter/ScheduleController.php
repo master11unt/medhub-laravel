@@ -13,12 +13,12 @@ class ScheduleController extends Controller
     {
         $doctorId = Auth::user()->doctor->id;
         $schedules = Schedule::where('doctor_id', $doctorId)->orderBy('date')->get();
-        return view('Dokter.Schedules.index', compact('schedules'));
+        return view('Dokter.Schedules.indexS', compact('schedules'));
     }
 
     public function create()
     {
-        return view('Dokter.Schedules.create');
+        return redirect()->route('dokter.schedules.create');
     }
 
     public function store(Request $request)
@@ -43,7 +43,7 @@ class ScheduleController extends Controller
     public function edit($id)
     {
         $schedule = Schedule::findOrFail($id);
-        return view('Dokter.Schedules.edit', compact('schedule'));
+        return redirect()->route('dokter.schedules.edit', compact('schedule'));
     }
 
     public function update(Request $request, $id)

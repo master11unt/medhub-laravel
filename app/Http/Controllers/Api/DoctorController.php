@@ -13,7 +13,7 @@ class DoctorController extends Controller
      */
     public function index(Request $request)
     {
-        $doctors = Doctor::with('user', 'reviews')
+        $doctors = Doctor::with('user', 'schedules')
             ->when($request->specialization, function ($query) use ($request) {
                 $query->where('specialization', 'like', "%{$request->specialization}%");
             })
@@ -22,6 +22,15 @@ class DoctorController extends Controller
                 $data = $doctor->toArray();
                 $data['average_rating'] = round($doctor->average_rating, 2);
                 $data['is_in_consultation'] = $doctor->is_in_consultation;
+
+                // Tambahkan URL lengkap untuk gambar user
+                if (isset($data['user']['image']) && !empty($data['user']['image'])) {
+                    // Jika gambar sudah berupa URL lengkap, biarkan apa adanya
+                    if (!str_starts_with($data['user']['image'], 'http')) {
+                        // Jika hanya path relatif, tambahkan base URL
+                        $data['user']['image'] = url('storage/' . $data['user']['image']);
+                    }
+                }
                 return $data;
             });
 
@@ -44,7 +53,7 @@ class DoctorController extends Controller
      */
     public function show($id)
     {
-        $doctor = Doctor::with('user', 'schedules', 'reviews')->find($id);
+        $doctor = Doctor::with('user', 'schedules')->find($id);
 
         if (!$doctor) {
             return response()->json([
@@ -56,6 +65,13 @@ class DoctorController extends Controller
         $data = $doctor->toArray();
         $data['average_rating'] = round($doctor->average_rating, 2);
         $data['is_in_consultation'] = $doctor->is_in_consultation;
+
+        // Tambahkan URL lengkap untuk gambar user
+        if (isset($data['user']['image']) && !empty($data['user']['image'])) {
+            if (!str_starts_with($data['user']['image'], 'http')) {
+                $data['user']['image'] = url('storage/' . $data['user']['image']);
+            }
+        }
 
         return response()->json([
             'status' => 'Sukses',

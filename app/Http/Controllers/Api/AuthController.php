@@ -127,26 +127,15 @@ class AuthController extends Controller
                 'image' => 'required|image|mimes:jpeg,png,jpg'
             ]);
 
-            // Ambil data user yang login
             $user = $request->user();
-            // Mengecek ada gambar atau file di inputan atau form nya
             if ($request->hasFile('image')) {
-                // cek apakah user punya data nama file gambar di database
-                // Dicek dulu di file_exists apakah file itu benar ada di public_path atau di folder public
+                
                 if ($user->image && file_exists(public_path($user->image))) {
-                    // unlink itu fungsi bawaan dari php untuk menghapus file dari server
-                    // unlink itu sa,a kayak delete, jadi kita hapus file yang ada di server
                     unlink(public_path($user->image));
                 }
 
-                // ambil file yang diinput dari request
                 $image = $request->file('image');
-                // 
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
-                // pindah dari lokasi sementara ke lokasi yang kita inginkan
-                // dari temporary ke public_path atau ke public/images/users
-                // public_path itu adalah folder public di dalam project kita
-                // harus dipindahkan ke public_path atau folder public karena kan laravel baca file dari folder public
                 $image->move(public_path('images/users'), $imageName);
 
                 $user->image = 'images/users/' . $imageName;
@@ -182,7 +171,6 @@ class AuthController extends Controller
             'phone' => 'required|string|max:20|unique:users,phone,' . $user->id,
             'jenis_kelamin' => 'required|in:L,P',
             'no_ktp' => 'required|string|max:50',
-            // tambahkan validasi lain jika perlu
         ]);
 
         $data = [

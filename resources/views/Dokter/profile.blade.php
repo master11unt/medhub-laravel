@@ -20,7 +20,7 @@
 
                     <h4>{{ $user->name }}</h4>
                     <p class="text-muted">{{ $user->email }} | {{ $user->phone }}</p>
-                    <a href="{{ route('doctor.complete-profile') }}" class="btn btn-warning">Edit Profil</a>
+                    <a href="{{ route('edit.dokter', $doctor->id) }}" class="btn btn-warning">Edit Profil</a>
                     <hr>
 
                     <div class="text-left mt-4">

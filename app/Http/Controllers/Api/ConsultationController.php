@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Consultation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ConsultationController extends Controller
 {
@@ -31,7 +33,48 @@ class ConsultationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'doctor_id' => 'required|exists:doctors,id',
+            'schedule_id' => 'nullable|exists:schedules,id',
+            'consultation_date' => 'required|date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first()
+            ], 422);
+        }
+
+        // Cek jika schedule sudah dipakai
+        if ($request->schedule_id) {
+            $existingConsultation = Consultation::where('schedule_id', $request->schedule_id)
+                                              ->whereIn('status', ['pending', 'in_progress'])
+                                              ->exists();
+            
+            if ($existingConsultation) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Jadwal sudah terpakai'
+                ], 422);
+            }
+        }
+
+        $consultation = Consultation::create([
+            'user_id' => Auth::id(),
+            'doctor_id' => $request->doctor_id,
+            'schedule_id' => $request->schedule_id,
+            'consultation_date' => $request->consultation_date,
+            'status' => 'pending'
+        ]);
+
+        $consultation->load(['doctor.user', 'schedule']);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Konsultasi berhasil dibuat',
+            'data' => $consultation
+        ], 201);
     }
 
     /**

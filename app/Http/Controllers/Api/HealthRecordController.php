@@ -32,7 +32,7 @@ class HealthRecordController extends Controller
             'allergies' => 'nullable|string',
             'current_medications' => 'nullable|string',
             'current_conditions' => 'nullable|string',
-            'medical_document' => 'nullable|string', // jika upload file, sesuaikan
+            'medical_document' => 'nullable|file|mimes:jpg,jpeg,png,pdf', // jika upload file, sesuaikan
         ]);
 
         // Cek jika sudah ada, update saja
@@ -77,7 +77,7 @@ class HealthRecordController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         $userId = $request->user()->id;
         $healthRecord = HealthRecord::where('id', $id)->where('user_id', $userId)->first();
@@ -98,7 +98,7 @@ class HealthRecordController extends Controller
             'allergies' => 'nullable|string',
             'current_medications' => 'nullable|string',
             'current_conditions' => 'nullable|string',
-            'medical_document' => 'nullable|string', // jika upload file, sesuaikan
+            'medical_document' => 'nullable|file|mimes:jpg,jpeg,png,pdf', // jika upload file, sesuaikan
         ]);
 
         $healthRecord->update($request->all());
@@ -135,24 +135,35 @@ class HealthRecordController extends Controller
         ], 200);
     }
 
-    public function updateMe(Request $request)
+
+    public function updateByUserId(Request $request, $user_id)
     {
-        $user = $request->user();
-        $healthRecord = HealthRecord::where('user_id', $user->id)->first();
+        $healthRecord = HealthRecord::where('user_id', $user_id)->first();
 
         if (!$healthRecord) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Data medis tidak ditemukan'
+                'status' => 'Gagal',
+                'message' => 'Data rekam medis tidak ditemukan'
             ], 404);
         }
+
+        $request->validate([
+            'height' => 'nullable|integer',
+            'weight' => 'nullable|integer',
+            'blood_type' => 'nullable|string|max:5',
+            'birth_date' => 'nullable|date',
+            'age' => 'nullable|integer',
+            'allergies' => 'nullable|string',
+            'current_medications' => 'nullable|string',
+            'current_conditions' => 'nullable|string',
+            'medical_document' => 'nullable|file|mimes:jpg,jpeg,png,pdf', // jika upload file, sesuaikan
+        ]);
 
         $healthRecord->update($request->all());
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Data medis berhasil diupdate',
+            'status' => 'Sukses',
             'data' => $healthRecord
-        ]);
+        ], 200);
     }
 }
